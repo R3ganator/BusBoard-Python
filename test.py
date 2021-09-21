@@ -39,10 +39,9 @@ def get_atcocode(postcode):
 
 
 class Buses:
-    def __init__(self):
-        self.departure_time = []
-        self.direction = []
-        self.number = []
+    departure_time = []
+    direction = []
+    number = []
 
     def timetable(self, departures):
         for all_buses in departures:
