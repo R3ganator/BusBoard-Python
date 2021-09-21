@@ -1,4 +1,3 @@
-import pprint
 import requests
 from constants import *
 
