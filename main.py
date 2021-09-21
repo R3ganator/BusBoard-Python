@@ -55,7 +55,7 @@ class Buses:
     def printer(self):
         line = '--' * 20
         print(f'{line}')
-        for i in range(5):
+        for i in range(min(5, len(self.number))):
             print(f'{self.number[i]:<5} | {self.direction[i]:<20} | {self.departure_time[i]}')
 
 
