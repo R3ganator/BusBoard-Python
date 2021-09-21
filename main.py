@@ -61,8 +61,7 @@ class Buses:
 
 def main():
     print("Welcome to BusBoard.")
-    # user_input = get_postcode()
-    user_input = 'nw1 2hs'
+    user_input = get_postcode()
     atcocode = get_atcocode(user_input)
     for i in atcocode:
         r = requests.get(f'http://transportapi.com/v3/uk/bus/stop/{i}/live.json?app_id={appId}&app_key={appKey}&group=no')
