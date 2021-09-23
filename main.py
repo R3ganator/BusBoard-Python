@@ -39,23 +39,51 @@ def get_atcocode(postcode):
 
 class Buses:
     def __init__(self):
-        self.departure_time = []
-        self.direction = []
-        self.number = []
+        self.buses = []
 
     def timetable(self, departures):
+        counter = 0
+        keep_running = True
         for all_buses in departures:
             bus_list = departures[all_buses]
-            for bus in bus_list:
-                self.number.append(bus['line'])
-                self.departure_time.append(bus['expected_departure_time'])
-                self.direction.append(bus['direction'])
+            while keep_running:
+                for bus in bus_list:
+                    if counter == 5:
+                        keep_running = False
+                        break
+                    number = bus['line']
+                    time = bus['aimed_departure_time']
+                    direction = bus['direction']
+                    self.buses.append(f'Bus number {number} headed to {direction} departing at {time}')
+                    counter += 1
+        return self.buses
 
-    def printer(self):
-        line = '--' * 20
-        print(f'{line}')
-        for i in range(5):
-            print(f'{self.number[i]:<5} | {self.direction[i]:<20} | {self.departure_time[i]}')
+
+def getTimetable(atcocode):
+    # for i in atcocode:
+    r = requests.get(f'http://transportapi.com/v3/uk/bus/stop/{atcocode}/live.json?app_id={appId}&app_key={appKey}&group=no&limit=2')
+    r_response = r.json()
+    stop = BusStop(r_response)
+    stop.departures()
+    stop.name()
+    return stop
+
+
+class BusStop:
+    def __init__(self, data):
+        self.data = data
+        self.info = []
+        self.stop_name = ''
+
+    def name(self):
+        self.stop_name = self.data['stop_name']
+        return self.stop_name
+
+    def departures(self):
+        departures = self.data['departures']
+        timetables = Buses()
+        self.info.append(timetables.timetable(departures))
+        return self.info
 
 
 def main():
@@ -63,12 +91,11 @@ def main():
     user_input = get_postcode()
     atcocode = get_atcocode(user_input)
     for i in atcocode:
-        r = requests.get(f'http://transportapi.com/v3/uk/bus/stop/{i}/live.json?app_id={appId}&app_key={appKey}&group=no')
-        r_response = r.json()
-        departures = r_response["departures"]
-        timetables = Buses()
-        timetables.timetable(departures)
-        timetables.printer()
+        stop = getTimetable(i)
+        print(f'Bus information for {stop.stop_name}')
+        for list in stop.info:
+            for bus in list:
+                print(f'{bus}')
 
 
 if __name__ == "__main__":

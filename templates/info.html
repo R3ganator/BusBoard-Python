@@ -5,6 +5,17 @@
     <h2>Bus Information</h2>
     <div>
         <p>You entered postcode <span>{{ postcode }}</span></p>
+        <meta http-equiv="refresh" content="30">
+    </div>
+    <div>
+            {% for stop in stops %}
+                <p>Bus information for {{stop.stop_name}}</p>
+                {% for list in stop.info %}
+                    {% for departure in list %}
+                        <li>{{departure}}</li>
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
     </div>
 </div>
 {% endblock %}
